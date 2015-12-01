@@ -1,0 +1,7 @@
+clc;
+clearvars;
+close all;
+
+loadI = imread('t014a.png');
+h = size(I, 1);
+w = size(I, 2);
