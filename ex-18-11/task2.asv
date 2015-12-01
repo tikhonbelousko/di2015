@@ -1,0 +1,34 @@
+clc;
+clear all;
+
+[I, map] = imread('kids.tif');
+I = ind2rgb(I, map);
+% tform = maketform('custom', 2, 2, [], @fisheye, []);
+% J = imwarp(I,tform);
+% figure,imshow(J);
+% radial barrel distortion
+
+ncols = size(I,2);
+nrows = size(I,1);
+
+[xi,yi] = meshgrid(1:ncols,1:nrows);
+a1 = 5; % Try varying the amplitude of the sinusoids.
+a2 = 3;
+imid1 = round(size(I,1)/2); % Find index of middle element
+imid2 = round(size(I,2)/2);
+
+xt = xi(:) - imid2;
+yt = yi(:) - imid1;
+[theta,r] = cart2pol(xt,yt);
+a1 = .000001; % Try varying the amplitude of the cubic term.
+a2 = .0000001
+s = r + a1*r.^2 + a2*r.^4;
+[ut,vt] = pol2cart(theta,s);
+u = reshape(ut,size(xi)) + imid2;
+v = reshape(vt,size(yi)) + imid1;
+tmap_B = cat(3,u,v);
+resamp = makeresampler('linear','fill');
+I_barrel = tformarray(I,[],resamp,[2 1],[1 2],[],tmap_B,0);
+
+figure, imshow(I_barrel)
+title('barrel')
