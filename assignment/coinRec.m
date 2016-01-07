@@ -25,13 +25,22 @@ imgcl = imclose(imginv,se);
 % Morphological opening to get rid of noises.
 imgop = imopen(imgcl,se);
 
+% Labeling coins in the image.
+cc = bwconncomp(imgop);
+disp(cc);
+imglbl = labelmatrix(cc);
+
+% Converting to pseudo-colored image.
+imgps = label2rgb(imglbl);
+
 % Show images.
 figure('name', 'Processing steps');
-subx = 3;
-suby = 2;
-plotI = {imgrgb, img, imgbw, imginv, imgcl, imgop};
+plotI = {imgrgb, img, imgbw, imginv, imgcl, imgop, imglbl, imgps};
 titles = {'Original image', 'Grayscale', 'Binary', 'Inverted',...
-    'Closure with 20px disk', 'Opening with 20px disk'};
+    'Closure with 20px disk', 'Opening with 20px disk', 'Labeled',...
+    'Pseudo-colored'};
+subx = ceil(length(plotI)/2);
+suby = 2;
 for subi = 1:subx*suby;
     if subi <= length(titles)
         subplot(suby, subx, subi);
