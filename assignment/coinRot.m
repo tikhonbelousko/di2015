@@ -25,34 +25,23 @@ rside = 300;
 roi = [70 370 rside rside]; % [xmin ymin width height]
 imgroi = imcrop(img, roi);
 
+% Gradients.
+[gmagref, gdirref] = imgradient(imgref,'Prewitt');
+[gmagroi, gdirroi] = imgradient(imgroi,'Prewitt');
+
 % Estimate transform by correlation.
-tformEstimate = imregcorr(imgroi,imgref);
+tformEstimate = imregcorr(gmagroi,gmagref);
 
 % Allign roi image.
-Rimgref = imref2d(size(imgref)); % Reference object.
-imgroiReg = imwarp(imgroi,tformEstimate,'OutputView',Rimgref);
+Rgmagref = imref2d(size(gmagref)); % Reference object.
+gmagroiReg = imwarp(gmagroi,tformEstimate,'OutputView',Rgmagref);
 
 % Stopping timer before plotting.
 disp('Time without plotting');
 toc;
 
 % Show image pairs.
-figure, imshowpair(imgref,imgroiReg,'montage');
-figure, imshowpair(imgref,imgroiReg,'falsecolor');
-
-% Show images.
-figure('name', 'Different images');
-plotI = {imgref, imgroi};
-titles = {'Reference', 'Region of interest'};
-subx = ceil(length(plotI)/2);
-suby = 2;
-for subi = 1:subx*suby;
-    if subi <= length(titles)
-        subplot(suby, subx, subi);
-        imshow(plotI{subi});
-        title(titles{subi});
-    end
-end
+figure, imshowpair(gmagref,gmagroiReg,'falsecolor');
 
 % Stopping timer.
 disp('Full time:');
