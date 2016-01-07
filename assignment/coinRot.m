@@ -13,7 +13,9 @@ imgrgb = imread('test_images/test_img1.jpg');
 img = rgb2gray(imgrgb);
 
 % Load reference rub.
-imgrefrgb = imread('ref_images/Russia-Coin-1-1998-a.png');
+bckbr = 0.7;
+imgrefrgb = imread('ref_images/Russia-Coin-1-1998-a.png',...
+    'BackgroundColor', [bckbr bckbr bckbr]);
 
 % Convert reference image to grayscale.
 imgref = rgb2gray(imgrefrgb);
@@ -23,30 +25,20 @@ rside = 300;
 roi = [70 370 rside rside]; % [xmin ymin width height]
 imgroi = imcrop(img, roi);
 
-% Detect features.
-mt = 1000;
-ptsref = detectSURFFeatures(imgref, 'MetricThreshold', mt);
-ptsroi = detectSURFFeatures(imgroi, 'MetricThreshold', mt);
+% Estimate transform by correlation.
+tformEstimate = imregcorr(imgroi,imgref);
 
-% Extract feature descriptors.
-[ftref, vptref] = extractFeatures(imgref, ptsref);
-[ftroi, vptroi] = extractFeatures(imgroi, ptsroi);
-
-% Match features by using their descriptors.
-idxpairs = matchFeatures(ftref, ftroi);
-
-% Retrieve locations of corresponding points for each image.
-mtchref = vptref(idxpairs(:,1));
-mtchroi = vptroi(idxpairs(:,2));
-
-% Show point matches. 
-figure;
-showMatchedFeatures(imgref,imgroi,mtchref,mtchroi);
-title('Putatively matched points (including outliers)');
+% Allign roi image.
+Rimgref = imref2d(size(imgref)); % Reference object.
+imgroiReg = imwarp(imgroi,tformEstimate,'OutputView',Rimgref);
 
 % Stopping timer before plotting.
 disp('Time without plotting');
 toc;
+
+% Show image pairs.
+figure, imshowpair(imgref,imgroiReg,'montage');
+figure, imshowpair(imgref,imgroiReg,'falsecolor');
 
 % Show images.
 figure('name', 'Different images');
