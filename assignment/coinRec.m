@@ -22,11 +22,12 @@ imgbw = im2bw(img, level);
 imginv = imcomplement(imgbw);
 
 % Morphological closing to get rid of holes in coins.
-se = strel('disk',20);
-imgcl = imclose(imginv,se);
+secl = strel('disk',20);
+imgcl = imclose(imginv,secl);
 
 % Morphological opening to get rid of noises.
-imgop = imopen(imgcl,se);
+seop = strel('disk',60);
+imgop = imopen(imgcl,seop);
 
 % Labeling coins in the image.
 cc = bwconncomp(imgop);

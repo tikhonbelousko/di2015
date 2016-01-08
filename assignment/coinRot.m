@@ -28,11 +28,14 @@ regside = 2*crad;
 roi = [cpos(1)-crad cpos(2)-crad regside regside];
 %     [xmin ymin width height]
 imgroi = imcrop(img, roi);
+
 % Resize to fit the size of reference coin.
 imgroi = imresize(imgroi, refrad/crad);
 
+imshowpair(imgref, imgroi, 'montage');
+
 % Estimate transform by correlation.
-tformEstimate = imregcorr(imgroi,imgref,'transformtype','rigid');
+tformEstimate = imregcorr(imgroi,imgref);
 
 % Allign roi image.
 Rimgref = imref2d(size(imgref)); % Reference object.
