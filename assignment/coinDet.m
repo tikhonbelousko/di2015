@@ -9,11 +9,14 @@ clear all;
 close all;
 
 % Load image.
-imgrgb = imread('test_images/test_img3.jpg');
+imgrgb = imread('test_images/test_img1.jpg');
+%imgrgb = imread('ref_images/Russia-Coin-1-1998-a.png');
 
 % Find circles.
 Rmin = 100;
 Rmax = 150;
+%Rmax = floor(min(size(imgrgb,1), size(imgrgb,2))/2);
+%Rmin = floor(0.8*Rmax);
 disp('Rmax < 3*Rmin?:');
 disp([Rmax 3*Rmin]);
 disp('(Rmax - Rmin) < 100?');
