@@ -9,10 +9,14 @@ clear all;
 close all;
 
 % Load image.
-imgrgb = imread('test_images/test_img1.jpg');
+%imgrgb = imread('test_images/test_img3.jpg');
+imgrgb = imread('iphone_images/sample5.jpg');
 
 % Convert to grayscale.
 img = rgb2gray(imgrgb);
+
+% Apply median filter.
+img = medfilt2(img);
 
 % Convert to binary image.
 level = graythresh(img); % Uses Otsu's method.
@@ -22,11 +26,16 @@ imgbw = im2bw(img, level);
 imginv = imcomplement(imgbw);
 
 % Morphological closing to get rid of holes in coins.
-secl = strel('disk',20);
+[h, w, c] = size(imgrgb);
+szpar = sqrt(w*h);
+dskrelszcl = 0.011;
+dskszcl = round(dskrelszcl*szpar);
+secl = strel('disk',dskszcl);
 imgcl = imclose(imginv,secl);
 
 % Morphological opening to get rid of noises.
-seop = strel('disk',60);
+dskszop = round(dskszcl*3);
+seop = strel('disk',dskszop);
 imgop = imopen(imgcl,seop);
 
 % Labeling coins in the image.
@@ -54,8 +63,7 @@ toc;
 figure('name', 'Processing steps');
 plotI = {imgrgb, img, imgbw, imginv, imgcl, imgop, imglbl, imgps};
 titles = {'Original image', 'Grayscale', 'Binary', 'Inverted',...
-    'Closure with 20px disk', 'Opening with 20px disk', 'Labeled',...
-    'Pseudo-colored'};
+    'Closure', 'Opening', 'Labeled', 'Pseudo-colored'};
 
 subx = ceil(length(plotI)/2);
 suby = 2;
