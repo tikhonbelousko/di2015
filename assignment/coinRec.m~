@@ -1,9 +1,6 @@
 % coinRec.m
 % Utilizes MATLAB Image Processing Toolbox.
 
-% Starting timer.
-tic;
-
 % Cleaning.
 clear all;
 close all;
@@ -30,24 +27,11 @@ imgop = imopen(imgcl,se);
 
 % Labeling coins in the image.
 cc = bwconncomp(imgop);
+disp(cc);
 imglbl = labelmatrix(cc);
 
 % Converting to pseudo-colored image.
 imgps = label2rgb(imglbl);
-
-% Extract coin sizes.
-cszpx = cellfun(@length, cc.PixelIdxList);
-onerubd = 20.5;
-onerubar = pi*(onerubd/2)^2;
-sc = cszpx(1)/onerubar; % Scale.
-cszmm = cszpx/sc;
-cdmm = 2*sqrt(cszmm/pi);
-disp('Coin diameters:');
-disp(cdmm);
-
-% Stopping timer before plotting.
-disp('Time without plotting');
-toc;
 
 % Show images.
 figure('name', 'Processing steps');
@@ -66,7 +50,3 @@ for subi = 1:subx*suby;
         title(titles{subi});
     end
 end
-
-% Stopping timer.
-disp('Full time:');
-toc;
