@@ -12,7 +12,8 @@ close all;
 
 % Load image.
 %imgrgb = imread('test_images/test_img2.jpg');
-imgrgb = imread('iphone_images/sample5.jpg');
+%imgrgb = imread('iphone_images/sample5.jpg');
+imgrgb = readWithFlatField('iphone_images/sample5.jpg');
 
 % Convert to grayscale.
 img = rgb2gray(imgrgb);
