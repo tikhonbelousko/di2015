@@ -14,11 +14,14 @@ close all;
 % 0.01, 0.05, 0.10, 0.50, 1, 2, 5, 10
 COINS = [15.50 18.50 17.50 19.50 20.50 23.00 25.00 22.00; ...
          00.01 00.05 00.10 00.50 01.00 02.00 05.00 10.00];
+     
+COLORS = ['y', 'm', 'c', 'r', 'g', 'b', 'w', 'k', ...
+          'y', 'm', 'c', 'r', 'g', 'b', 'w', 'k'];
 
 %==== Loading and preprocessing ====%
 
 % Load image with preprocessing.
-imgrgb = readWithFlatField('iphone_images/sample3.jpg');
+imgrgb = readWithFlatField('iphone_images/sample2.jpg');
 
 %==== Rough diameter estimation ====%
 
@@ -92,6 +95,11 @@ imshow(imgrgb);
 % Visualize circles.
 viscircles(centers, radii,'EdgeColor','b');
 
+sz = size(centers, 1)
+for i=1:sz
+    text(centers(i,1),centers(i,2), ...
+        sprintf('%2.2f', cdmm2(i)),'Color',[1 1 0],'FontSize',20);
+end
 %==== Estimating money sum in the image ====%
 
 % Total money sum
